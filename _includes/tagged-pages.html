@@ -1,0 +1,41 @@
+{% assign pages = site.pages | where_exp: "page", "page.tags contains include.tag" | sort: "date" | reverse %}
+{% if include.limit %}
+  {% assign pages = pages | slice: 0, include.limit %}
+{% endif %}
+
+{% assign count = include.countOfCovers | default: 100 | plus: 0 %}
+{% assign featured_pages = pages | slice: 0, count %}
+{% assign remaining_pages = pages | slice: count, pages.size %}
+
+<div class="video-pages-grid">
+  {% for page in featured_pages %}
+    <div class="video-page-card">
+      <a href="{{ page.url | relative_url }}">
+        {% if page.coverImage %}
+          <img src="{{ page.coverImage | relative_url}}" alt="{{ page.title | escape }}" class="video-thumbnail">
+        {% else %}
+          <div class="no-thumbnail">
+            <span class="page-icon">📄</span>
+          </div>
+        {% endif %}
+        <div class="page-card-content">
+          <h3>{{ page.title | escape }}</h3>
+          <p class="page-date">{{ page.date | date: "%d.%m.%Y" }}</p>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</div>
+
+{% if remaining_pages.size > 0 %}
+  <div class="pages-list">
+    {% for page in remaining_pages %}
+      <div class="page-list-item">
+        <a href="{{ page.url | relative_url }}">
+          <span class="page-list-title">{{ page.title | escape }}</span>
+          <span class="page-date">{{ page.date | date: "%d.%m.%Y" }}</span>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %} 

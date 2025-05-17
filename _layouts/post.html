@@ -1,0 +1,65 @@
+---
+layout: default
+---
+
+<article class="post">
+  {% if page.coverImage %}
+  <div class="post-cover">
+    <img src="{{ site.url }}{{ site.baseurl }}/{{ page.coverImage }}" alt="{{ page.title }} cover image">
+  </div>
+  {% endif %}
+
+  <header class="post-header">
+    <h1 class="post-title">{{ page.title }}</h1>
+    <div class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%d.%m.%Y" }}</time>
+      {% if page.categories.size > 0 %}
+        • Категорії: {% for category in page.categories %}
+          {% assign category_data = site.data.wp_categories | where: "slug", category | first %}
+          <a href="{{ '/action/' | append: category | relative_url }}">{{ category_data.name | default: category }}</a>{% unless forloop.last %}, {% endunless %}
+        {% endfor %}
+      {% endif %}
+      {% if page.tags.size > 0 %}
+        • Теги: {% for tag in page.tags %}
+          {% assign tag_data = site.data.wp_tags | where: "slug", tag | first %}
+          <a href="{{ '/tag/' | append: tag | relative_url }}">{{ tag_data.name | default: tag }}</a>{% unless forloop.last %}, {% endunless %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </header>
+
+  {% if page.author %}
+    {% if page.author.username %}
+      {% assign author = site.data.authors | where: "login", page.author.username | first %}
+    {% else %}
+      {% assign author = site.data.authors | where: "login", page.author | first %}
+    {% endif %}
+    <div class="post-author">
+      <img src="{{ author.avatarUrl | relative_url }}" alt="{{ author.name | escape }}" class="post-author-avatar">
+      <div class="post-author-info">
+        <h2><a href="{{ '/author/' | append: author.login | relative_url }}">{{ author.name | escape }}</a></h2>
+        {% if author.description %}
+          <p class="post-author-description">{{ author.description | escape }}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if page.categories contains 'kolonka-avtora' %}
+    <div class="post-disclaimer">
+      <p>Команда сайту «МПЗ» може не поділяти погляди авторів та не несе відповідальності за інформацію, опубліковану у розділі «Блоги». Відповідальність за зміст, достовірність фактів, цитат, власних назв та інших відомостей несуть автори текстів, розміщених у розділі «Блоги»</p>
+    </div>
+  {% endif %}
+
+  <div class="post-content">
+    {% include process_youtube_links.html %}
+  </div>
+
+  {% if page.tags.size > 0 %}
+    <hr class="post-separator">
+    <div class="similar-posts-section">
+      <h2 class="similar-posts-title">Схожі публікації</h2>
+      {% include similar-posts.html sourcePost=page limit=6 countOfCovers=3 %}
+    </div>
+  {% endif %}
+</article> 

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://litopys.brovary.org/sitemap.txt 
